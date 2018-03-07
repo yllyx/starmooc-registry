@@ -5,10 +5,17 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.*;
-import org.springframework.context.annotation.*;
-import org.springframework.http.*;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,12 +27,15 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.RestTemplate;
+import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 import io.github.jhipster.registry.security.AuthoritiesConstants;
+import io.github.jhipster.registry.security.oauth2.CachedUserInfoTokenServices;
 import io.github.jhipster.registry.security.oauth2.SimpleAuthoritiesExtractor;
 import io.github.jhipster.registry.security.oauth2.SimplePrincipalExtractor;
 
 @Configuration
+@Import(SecurityProblemSupport.class)
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Profile(Constants.PROFILE_OAUTH2)
@@ -36,15 +46,19 @@ public class OAuth2SecurityConfiguration extends ResourceServerConfigurerAdapter
     private static final String OAUTH2_AUTHORITIES_ATTRIBUTE = "roles";
 
     private ResourceServerProperties resourceServerProperties;
+    
+    private final SecurityProblemSupport problemSupport;
 
-    public OAuth2SecurityConfiguration(ResourceServerProperties resourceServerProperties) {
+    public OAuth2SecurityConfiguration(ResourceServerProperties resourceServerProperties
+        ,SecurityProblemSupport problemSupport) {
         this.resourceServerProperties = resourceServerProperties;
+        this.problemSupport = problemSupport;
     }
 
     @Bean
     @Primary
-    public UserInfoTokenServices userInfoTokenServices(PrincipalExtractor principalExtractor, AuthoritiesExtractor authoritiesExtractor) {
-        UserInfoTokenServices userInfoTokenServices = new UserInfoTokenServices(resourceServerProperties.getUserInfoUri(), resourceServerProperties.getClientId());
+    public CachedUserInfoTokenServices userInfoTokenServices(PrincipalExtractor principalExtractor, AuthoritiesExtractor authoritiesExtractor) {
+        CachedUserInfoTokenServices userInfoTokenServices = new CachedUserInfoTokenServices(resourceServerProperties.getUserInfoUri(), resourceServerProperties.getClientId());
         userInfoTokenServices.setPrincipalExtractor(principalExtractor);
         userInfoTokenServices.setAuthoritiesExtractor(authoritiesExtractor);
         return userInfoTokenServices;
@@ -68,9 +82,11 @@ public class OAuth2SecurityConfiguration extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf()
+        http.csrf()
             .disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(problemSupport).accessDeniedHandler(problemSupport)
+        .and()
             .headers()
             .frameOptions()
             .disable()
@@ -83,10 +99,11 @@ public class OAuth2SecurityConfiguration extends ResourceServerConfigurerAdapter
             .antMatchers("/services/**").authenticated()
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
+            .antMatchers("/v2/api-docs/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN);
     }
-
+    
     @Bean
     @ConditionalOnProperty("security.oauth2.resource.jwt.key-uri")
     public TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter) {

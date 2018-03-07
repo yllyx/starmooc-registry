@@ -54,9 +54,6 @@
             window.springfox.uiConfig(function(data) {
                 window.swaggerUi = new SwaggerUi({
                     dom_id: "swagger-ui-container",
-                    authorizations: {
-                        bearer: getApiKeyAuthorization()
-                    },
                     validatorUrl: data.validatorUrl,
                     supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
                     onComplete: function(swaggerApi, swaggerUi) {
@@ -79,19 +76,15 @@
                 initializeBaseUrl();
 
                 $('#select_baseUrl').change(function() {
-                    var selectedUrl = this.value;
-                    if (selectedUrl == null) {
-                        return;
-                    }
                     window.swaggerUi.headerView.trigger('update-swagger-ui', {
-                        url: selectedUrl
+                        url: $('#select_baseUrl').val()
                     });
+                    addApiKeyAuthorization();
                 });
 
-                function getApiKeyAuthorization() {
-                    // working only with JWT authentication
-                    var authToken = JSON.parse(localStorage.getItem("jhi-authenticationtoken") || sessionStorage.getItem("jhi-authenticationtoken"));
-                    return new SwaggerClient.ApiKeyAuthorization("Authorization", "Bearer " + authToken, "header");
+                function addApiKeyAuthorization() {
+                    var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("X-XSRF-TOKEN", getCSRF(), "header");
+                    window.swaggerUi.api.clientAuthorizations.add("key", apiKeyAuth);
                 }
 
                 function getCSRF() {
@@ -149,7 +142,7 @@
                     $.each(data, function(i, resource) {
                         var option = $('<option></option>')
                         .attr("value", maybePrefix(resource.location, relativeLocation))
-                        .text(resource.name);
+                        .text(resource.name + " (" + resource.location + ")");
                         $urlDropdown.append(option);
                     });
                     $urlDropdown.change();

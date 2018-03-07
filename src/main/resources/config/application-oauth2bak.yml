@@ -22,16 +22,18 @@ security:
         enabled: false
     oauth2:
         client:
-            access-token-uri: http://119.97.166.137:1003/starOauth/oauth/token
-            user-authorization-uri: http://119.97.166.137:1003/starOauth/oauth/authorize
-            client-id: starMOOC-registry
-            client-secret: starMOOC-registry-secret
+            access-token-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token
+            user-authorization-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/auth
+            client-id: jhipster-registry
+            client-secret: jhipster-registry
             client-authentication-scheme: form
-            scope: read
+            scope: openid profile email
         resource:
-            user-info-uri: http://119.97.166.137:1003/starOauth/user_info
-            token-info-uri: http://119.97.166.137:1003/starOauth/oauth/token
+            user-info-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/userinfo
+            token-info-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token/introspect
             prefer-token-info: false
+            jwt:
+                key-uri: http://localhost:9080/auth/realms/jhipster
 
 server:
     session:

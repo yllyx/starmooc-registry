@@ -8,6 +8,7 @@ spring:
         name: jhipster-registry
     profiles:
         active: dev,native
+        include: oauth2
     cloud:
         config:
             server:

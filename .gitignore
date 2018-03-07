@@ -125,6 +125,8 @@ Desktop.ini
 *.*~
 *~
 .merge_file*
+.tern-project
+jhipster-registry.log*
 
 ######################
 # Gradle Wrapper
@@ -140,3 +142,4 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+/.apt_generated/

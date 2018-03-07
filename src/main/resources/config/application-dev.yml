@@ -30,7 +30,7 @@ spring:
         cache-seconds: 1
     profiles:
         active: dev
-        include: swagger
+        include:  swagger
 
 # ===================================================================
 # To enable SSL, generate a certificate using:
@@ -93,11 +93,11 @@ jhipster:
             enabled: false
             endpoint: /prometheusMetrics
         logs: # Reports Dropwizard metrics in the logs
-            enabled: false
+            enabled: true
             report-frequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
-            enabled: false
+            enabled: true
             host: localhost
             port: 5000
             queue-size: 512
