@@ -1,7 +1,7 @@
 FROM openjdk:8-jre-alpine
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
-    SPRING_PROFILES_ACTIVE=dev,native,oauth2 \
+    SPRING_PROFILES_ACTIVE=prod,native,oauth2 \
     JHIPSTER_SLEEP=0
 
 # add directly the war
