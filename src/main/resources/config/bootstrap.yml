@@ -7,22 +7,28 @@ spring:
     application:
         name: jhipster-registry
     profiles:
-        active: #spring.profiles.active#
+        active: 
         include: 
     cloud:
         config:
             server:
-                git:
-                    uri: https://github.com/jhipster/jhipster-registry-sample-config
+#                git:
+#                    uri: https://github.com/jhipster/jhipster-registry-sample-config
+                svn:  
+                    uri: https://122.204.161.119/svn/starMooc/cloudconfig
+                    username: longyunxiang
+                    password: 888888
+                    basedir: ./cloudconfig
+                default-label: config 
                 native:
                     search-locations: file:./central-config
-                prefix: /config
+#                prefix: /config
                 bootstrap: true
             fail-fast: true
             # name of the config server's property source (file.yml) that we want to use
-            name: jhipster-registry
-            profile: dev # profile(s) of the property source
-            label: master # toggle to switch to a different version of the configuration as stored in git
+            name: starmooc-registry
+#            profile: dev # profile(s) of the property source
+#            label: config # toggle to switch to a different version of the configuration as stored in git
             # it can be set to any label, branch or commit of the config source git repository
 
 info:

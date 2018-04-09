@@ -17,23 +17,4 @@
 # export SECURITY_OAUTH2_CLIENT_CLIENT_ID="jhipster"
 # export SECURITY_OAUTH2_CLIENT_CLIENT_SECRET="38561a05"
 # ===================================================================
-security:
-    basic:
-        enabled: false
-    oauth2:
-        client:
-            access-token-uri: http://oauth.spoc.ccnu.edu.cn/oauth/token
-            user-authorization-uri: http://oauth.spoc.ccnu.edu.cn/oauth/authorize
-            client-id: starmooc-registry
-            client-secret: starmooc-registry-secret
-            client-authentication-scheme: form
-            scope: read
-        resource:
-            user-info-uri: http://oauth.spoc.ccnu.edu.cn/user_info
-            token-info-uri: http://oauth.spoc.ccnu.edu.cn/oauth/token
-            prefer-token-info: false
-
-server:
-    session:
-        cookie:
-            http-only: true
+# longyunxiang: all properties set in profiles files , eg: xxx-prod.yml 

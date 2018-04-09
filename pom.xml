@@ -34,6 +34,8 @@
         <tag.native />
         <profile.oauth2 />
         <tag.oauth2 />
+        <profile.svn />
+        <tag.svn />
 
         <!-- Dependency versions -->
         <jhipster-dependencies.version>0.0.5</jhipster-dependencies.version>
@@ -328,6 +330,10 @@
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId> 
         </dependency>
+        <dependency>
+	        <groupId>org.tmatesoft.svnkit</groupId>
+	        <artifactId>svnkit</artifactId>
+	    </dependency>
     </dependencies>
 
     <build>
@@ -724,6 +730,13 @@
             </properties>
         </profile>
         <profile>
+            <id>svn</id>
+            <properties>
+                <profile.svn>,subversion</profile.svn>
+                <tag.svn>-subversion</tag.svn>
+            </properties>
+        </profile>
+        <profile>
             <id>webpack</id>
             <build>
                 <plugins>
@@ -900,9 +913,9 @@
                 <!-- log configuration -->
                 <logback.loglevel>INFO</logback.loglevel>
                 <!-- default Spring profiles -->
-                <spring.profiles.active>prod${profile.native}${profile.swagger}${profile.peer1}${profile.peer2}${profile.oauth2}</spring.profiles.active>
+                <spring.profiles.active>prod${profile.native}${profile.swagger}${profile.peer1}${profile.peer2}${profile.oauth2}${profile.svn}</spring.profiles.active>
                 <!-- 用于生成docker镜像区分不同的镜像 -->
-                <tag.profile>prod${tag.native}${tag.peer1}${tag.peer2}${tag.oauth2}</tag.profile>
+                <tag.profile>prod${tag.native}${tag.peer1}${tag.peer2}${tag.oauth2}${tag.svn}</tag.profile>
             </properties>
         </profile>
         
