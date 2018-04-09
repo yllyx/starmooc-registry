@@ -54,6 +54,8 @@ security:
         name: admin
         password: admin
         role: USER,ADMIN
+        
+
 # ===================================================================
 # JHipster specific properties
 #

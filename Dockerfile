@@ -11,7 +11,7 @@ RUN \
 
 FROM openjdk:8-jre-alpine
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
-    SPRING_PROFILES_ACTIVE=prod,native \
+    SPRING_PROFILES_ACTIVE=${spring.profiles.active} \
     GIT_URI=https://github.com/jhipster/jhipster-registry/ \
     GIT_SEARCH_PATHS=central-config
 EXPOSE 8761

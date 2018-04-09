@@ -26,6 +26,14 @@
         <run.addResources>false</run.addResources>
         <!-- These remain empty unless the corresponding profile is active -->
         <profile.swagger />
+        <profile.peer1 />
+        <tag.peer1 />
+        <profile.peer2 />
+        <tag.peer2 />
+        <profile.native />
+        <tag.native />
+        <profile.oauth2 />
+        <tag.oauth2 />
 
         <!-- Dependency versions -->
         <jhipster-dependencies.version>0.0.5</jhipster-dependencies.version>
@@ -43,6 +51,7 @@
         <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
         <maven-war-plugin.version>2.6</maven-war-plugin.version>
         <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
+        <dockerfile-maven-plugin.version>1.3.4</dockerfile-maven-plugin.version>
         <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
         <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
@@ -413,13 +422,28 @@
                                             <include>**/*.yml</include>
                                         </includes>
                                     </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>docker-resources</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>target/</outputDirectory>
+                                <useDefaultDelimiters>true</useDefaultDelimiters>
+                                <!-- <delimiters>
+                                    <delimiter>#</delimiter>
+                                </delimiters> -->
+                                <resources>
                                     <resource>
-                                        <directory>src/main/resources/</directory>
-                                        <filtering>false</filtering>
-                                        <excludes>
-                                            <exclude>**/*.xml</exclude>
-                                            <exclude>**/*.yml</exclude>
-                                        </excludes>
+                                        <directory>src/main/docker/</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>Dockerfile</include>
+                                        </includes>
                                     </resource>
                                 </resources>
                             </configuration>
@@ -506,12 +530,15 @@
                         -->
                     </configuration>
                 </plugin>
-                <plugin>
+               <!--  <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker-maven-plugin.version}</version>
                     <configuration>
-                        <imageName>jhipster-registry</imageName>
+                        <imageName>jhipster-registry-${tag.profile}</imageName>
+                        <imageTags>
+                            <imageTag>${project.version}</imageTag>
+                        </imageTags>
                         <dockerDirectory>src/main/docker</dockerDirectory>
                         <dockerHost>https://192.168.99.100:2376</dockerHost>
                         <dockerCertPath>C:/Users/admin/.docker/machine/machines/default</dockerCertPath>
@@ -523,7 +550,31 @@
                             </resource>
                         </resources>
                     </configuration>
-                </plugin>
+                </plugin> -->
+                
+                <plugin>
+	                <groupId>com.spotify</groupId>
+	                <artifactId>dockerfile-maven-plugin</artifactId>
+	                <version>${dockerfile-maven-plugin.version}</version>
+	                <!--
+	                Uncomment the section below to build the docker image with mvn package and and push it with mvn deploy
+	                <executions>
+	                    <execution>
+	                    <id>default</id>
+	                    <goals>
+	                        <goal>build</goal>
+	                        <goal>push</goal>
+	                    </goals>
+	                    </execution>
+	                </executions>
+	                -->
+	                <configuration>
+	                    <repository>jhipster-registry-${tag.profile}</repository>
+	                    <tag>${project.version}</tag>
+	                    <contextDirectory>${project.build.directory}</contextDirectory>
+	                </configuration>
+	            </plugin>
+            
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
@@ -624,9 +675,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
+           <!--  <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
+            </plugin> -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
             </plugin>
             <!-- jhipster-needle-maven-add-plugin -->
         </plugins>
@@ -638,6 +693,34 @@
             <id>swagger</id>
             <properties>
                 <profile.swagger>,swagger</profile.swagger>
+            </properties>
+        </profile>
+        <profile>
+            <id>peer1</id>
+            <properties>
+                <profile.peer1>,peer1</profile.peer1>
+                <tag.peer1>-peer1</tag.peer1>
+            </properties>
+        </profile>
+        <profile>
+            <id>peer2</id>
+            <properties>
+                <profile.peer2>,peer2</profile.peer2>
+                <tag.peer2>-peer2</tag.peer2>
+            </properties>
+        </profile>
+        <profile>
+            <id>native</id>
+            <properties>
+                <profile.native>,native</profile.native>
+                <tag.native>-native</tag.native>
+            </properties>
+        </profile>
+        <profile>
+            <id>oauth2</id>
+            <properties>
+                <profile.oauth2>,oauth2</profile.oauth2>
+                <tag.oauth2>-oauth2</tag.oauth2>
             </properties>
         </profile>
         <profile>
@@ -817,7 +900,9 @@
                 <!-- log configuration -->
                 <logback.loglevel>INFO</logback.loglevel>
                 <!-- default Spring profiles -->
-                <spring.profiles.active>prod${profile.swagger}</spring.profiles.active>
+                <spring.profiles.active>prod${profile.native}${profile.swagger}${profile.peer1}${profile.peer2}${profile.oauth2}</spring.profiles.active>
+                <!-- 用于生成docker镜像区分不同的镜像 -->
+                <tag.profile>prod${tag.native}${tag.peer1}${tag.peer2}${tag.oauth2}</tag.profile>
             </properties>
         </profile>
         
