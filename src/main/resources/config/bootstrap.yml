@@ -22,7 +22,7 @@ spring:
                 default-label: config 
                 native:
                     search-locations: file:./central-config
-#                prefix: /config
+                prefix: /config
                 bootstrap: true
             fail-fast: true
             # name of the config server's property source (file.yml) that we want to use
