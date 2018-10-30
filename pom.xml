@@ -829,7 +829,8 @@
                 <!-- log configuration -->
                 <logback.loglevel>DEBUG</logback.loglevel>
                 <!-- default Spring profiles -->
-                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.profiles.active>dev,native${profile.oauth2}${profile.swagger}</spring.profiles.active>
+                <tag.profile>dev</tag.profile>
             </properties>
         </profile>
 
