@@ -61,15 +61,15 @@ security:
         enabled: false
     oauth2:
         client:
-            access-token-uri: http://119.97.166.137:1003/starOauth/oauth/token
-            user-authorization-uri: http://119.97.166.137:1003/starOauth/oauth/authorize
+            access-token-uri: http://192.168.11.22:8080/starOauth/oauth/token
+            user-authorization-uri: http://192.168.11.22:8080/starOauth/oauth/authorize
             client-id: starMOOC-gateway
             client-secret: starMOOC-gateway-secret
             client-authentication-scheme: form
             scope: read
         resource:
-            user-info-uri: http://119.97.166.137:1003/starOauth/user_info
-            token-info-uri: http://119.97.166.137:1003/starOauth/oauth/token
+            user-info-uri: http://192.168.11.22:8080/starOauth/user_info
+            token-info-uri: http://192.168.11.22:8080/starOauth/oauth/token
             prefer-token-info: false
 # ===================================================================
 # JHipster specific properties
